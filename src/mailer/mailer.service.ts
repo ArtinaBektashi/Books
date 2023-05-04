@@ -1,34 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class MailerService {
-  constructor(private readonly configService: ConfigService) {}
+  private transporter: nodemailer.Transporter;
+
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+        host: "sandbox.smtp.mailtrap.io",
+        port: 2525,
+        auth: {
+          user: "e8c99ed5370d5f",
+          pass: "e272cc7c8322d1"
+        }
+    });
+  }
 
   async sendResetPasswordEmail(to: string, token: string) {
-    const mailConfig = this.configService.get('mail');
+    const subject = 'Password Reset';
+    const text = `Click the link below to reset your password:\n\nhttp://localhost:3000/auth/reset-password?token=${token}`;
+    const html = `<p>Click the link below to reset your password:</p><p><a href="http://localhost:3000/auth/reset-password?token=${token}">Reset Password</a></p>`;
 
-    const transporter = nodemailer.createTransport({
-      service: mailConfig.transport.service,
-      auth: {
-        user: mailConfig.transport.auth.user,
-        pass: mailConfig.transport.auth.pass,
-      },
+    await this.transporter.sendMail({
+      from: 'your_email@gmail.com',
+      to: to,
+      subject : subject,
+      text: text,
+      html : html,
     });
-
-    const resetPasswordUrl = `${mailConfig.resetPasswordUrl}?token=${token}`;
-
-    const mailOptions = {
-      from: mailConfig.fromEmail,
-      to,
-      subject: 'Reset your password',
-      html: `
-        <p>Please click <a href="${resetPasswordUrl}">here</a> to reset your password.</p>
-        <p>If you didn't request a password reset, please ignore this email.</p>
-      `,
-    };
-
-    return transporter.sendMail(mailOptions);
   }
 }

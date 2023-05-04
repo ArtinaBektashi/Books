@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/users/entities/users.entity';
 import { MailerService } from 'src/mailer/mailer.service';
+// import { MailerService } from 'src/mailer/mailer.service';
 
 @Module({
   imports: [

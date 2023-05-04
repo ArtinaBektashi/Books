@@ -77,7 +77,7 @@ export class AuthService {
            const isValid = bcrypt.compareSync(user.password, userDetails.password);
            if (isValid) {
              const payload = { email: user.email };
-             const token = jwt.sign(payload, 'secret', { expiresIn: '60s' });
+             const token = jwt.sign(payload, 'secret', { expiresIn: '15m' });
              return {
                status: 200,
                msg: {
