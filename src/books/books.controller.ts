@@ -2,13 +2,14 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { BooksService } from './books.service';
 import { Books } from './entities/books.entity';
 import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('books')
 export class BooksController {
     constructor(private booksService : BooksService){}
 
     @Get()
-    @UseGuards()
+    @UseGuards(AuthGuard)
     async getBooks(): Promise<Books[]>{
         return await this.booksService.getBooks();
     }

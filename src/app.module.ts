@@ -44,13 +44,13 @@ import { AuthMiddleware } from './auth/auth.middleware';
   providers: [AppService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .exclude({ path: 'auth/login', method: RequestMethod.POST },
-      { path: 'auth/register', method: RequestMethod.POST },
-      { path: 'auth/reset-password/:token', method: RequestMethod.POST },
-      { path: 'auth/forgot-password', method: RequestMethod.POST })
-      .forRoutes('*');
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(AuthMiddleware)
+  //     .exclude({ path: 'auth/login', method: RequestMethod.POST },
+  //     { path: 'auth/register', method: RequestMethod.POST },
+  //     { path: 'auth/reset-password/:token', method: RequestMethod.POST },
+  //     { path: 'auth/forgot-password', method: RequestMethod.POST })
+  //     .forRoutes('*');
+  // }
 }

@@ -12,7 +12,7 @@ import * as jwt from 'jsonwebtoken';
 @Injectable()
 export class AuthService {
     constructor(
-    @InjectRepository(Users) private usersRepository:Repository<Users>){}
+    @InjectRepository(Users) private usersRepository:Repository<Users>,){}
 
     async createUser(body: any): Promise<Record<string, any>> {
         // Validation Flag
@@ -22,6 +22,7 @@ export class AuthService {
         const userDTO = new UsersDTO();
         userDTO.email = body.email;
         userDTO.password = bcrypt.hashSync(body.password, 10);
+        
       
         // Validate DTO against validate function from class-validator
         await validate(userDTO).then((errors) => {
