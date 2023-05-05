@@ -12,7 +12,7 @@ import { MailerService } from 'src/mailer/mailer.service';
     TypeOrmModule.forFeature([Users]),
     PassportModule,
   ],
-  providers: [AuthService, MailerService],
+  providers: [AuthService, MailerService,],
   exports: [AuthService],
   controllers: [AuthController],
 })
