@@ -11,10 +11,15 @@ export class BooksController {
 
     @Get()
     @UseGuards(AuthGuard)
-    async getBooks(): Promise<Books[]>{
-        return await this.booksService.getBooks();
-    }
 
+    async getBooks(
+        @Query('take') take?: number,
+        @Query('skip') skip?: number,
+      ): Promise<Books[]> {
+        return await this.booksService.getBooks({ take, skip });
+      }
+
+      
     @Get(':id')
     async getAuthor(@Param('id') id:number): Promise<Books>{
         return await this.booksService.getBook(id);
@@ -35,10 +40,4 @@ export class BooksController {
         return await this.booksService.removeBook(id);
     }
 
-    // @Get()
-    // findSelected(@Query('take') take : number = 1 ,
-    // @Query('skip') skip : number = 1){
-    //     take = take > 20 ? 20 : take;
-    //     return this.booksService.findSelected(take,skip)
-    // }
 }

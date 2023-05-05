@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { Books } from './entities/books.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Like, Repository } from 'typeorm';
 import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
 import { AuthorsService } from 'src/authors/authors.service';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { Authors } from 'src/authors/entities/authors.entity';
 
 @Injectable()
@@ -12,9 +12,23 @@ export class BooksService {
     constructor(@InjectRepository(Books) private repo : Repository<Books>,
     private authorsService : AuthorsService){}
 
-    async getBooks(): Promise<Books[]> {
-        return await this.repo.find();
+
+    async getBooks({ take, skip }: { take?: number; skip?: number } = {}): Promise<Books[]> {
+        const queryBuilder = this.repo.createQueryBuilder('books');
+        
+        if (take) {
+            queryBuilder.take(take);
+        }
+        
+        if (skip) {
+            queryBuilder.skip(skip);
+        }
+        
+        const books = await queryBuilder.leftJoinAndSelect('books.authors', 'authors').getMany();
+        
+        return books;
     }
+    
 
     async createBooks(createBooksDto: CreateBooksDto, authorIds?: number[]) {
         let authors: Authors[] | undefined;
@@ -44,9 +58,22 @@ export class BooksService {
         return await this.repo.delete(books.id)
     }
 
-    // async findSelected(take:number = 10 , skip : number = 0){
-    //     this.repo.findAndCount({take, skip}).then((books) =>{
-    //         return books
-    //     })
-    // }
+    async findAll(query): Promise<{ data: Books[], count: number }> {
+        const take = query.take || 10
+        const skip = query.skip || 0
+        const keyword = query.keyword || ''
+    
+        const [result, total] = await this.repo.findAndCount(
+            {
+                where: { title: Like('%' + keyword + '%') }, order: { title: "DESC" },
+                take: take,
+                skip: skip
+            }
+        );
+    
+        return {
+            data: result,
+            count: total
+        }
+    }
 }
