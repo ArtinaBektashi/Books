@@ -8,16 +8,12 @@ import { UsersService } from "src/users/users.service";
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector,
     private readonly userService: UsersService,) {}
-// bone ni metod ne userservice per me gjet userin permes emailit,
-//pastaj ate metod e thirr ne qet class edhe e qon si parameter qat emailin e tokenit
-//edhe e check nese e ka qat role qe po tvjen prej role guardit
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
-    
     
     
     if (!requiredRoles) {
