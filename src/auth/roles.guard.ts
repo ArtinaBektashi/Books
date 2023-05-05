@@ -20,6 +20,7 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
+    
     const email = request.user.email;
 
     const user = await this.userService.getUserByEmail(email);

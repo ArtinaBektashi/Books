@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { Books } from './entities/books.entity';
 import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Observable } from 'rxjs';
 
 @Controller('books')
 export class BooksController {
@@ -20,7 +21,7 @@ export class BooksController {
     }
 
     @Post()
-    async createBooks(@Body() createBooksDto : CreateBooksDto, @Body('authorIds') authorIds: number[]) : Promise<Books>{
+    async createBooks(@Body() createBooksDto : CreateBooksDto, @Body('authorIds') authorIds?: number[]) : Promise<Books>{
         return await this.booksService.createBooks(createBooksDto, authorIds);
     }
 
@@ -33,4 +34,11 @@ export class BooksController {
     async removeBook(@Param('id') id:number){
         return await this.booksService.removeBook(id);
     }
+
+    // @Get()
+    // findSelected(@Query('take') take : number = 1 ,
+    // @Query('skip') skip : number = 1){
+    //     take = take > 20 ? 20 : take;
+    //     return this.booksService.findSelected(take,skip)
+    // }
 }

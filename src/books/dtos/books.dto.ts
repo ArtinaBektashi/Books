@@ -19,7 +19,7 @@ export class CreateBooksDto{
     @IsArray()
     @IsNumber({}, { each: true })
     authorIds? : number[];
-    //object
+   
 }
 
 export class UpdateBooksDto{

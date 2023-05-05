@@ -4,6 +4,8 @@ import { Books } from './entities/books.entity';
 import { Repository } from 'typeorm';
 import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
 import { AuthorsService } from 'src/authors/authors.service';
+import { Observable } from 'rxjs';
+import { Authors } from 'src/authors/entities/authors.entity';
 
 @Injectable()
 export class BooksService {
@@ -14,8 +16,11 @@ export class BooksService {
         return await this.repo.find();
     }
 
-    async createBooks(createBooksDto: CreateBooksDto, authorIds : number[]) {
-        const authors= await this.authorsService.findByIds(authorIds);
+    async createBooks(createBooksDto: CreateBooksDto, authorIds?: number[]) {
+        let authors: Authors[] | undefined;
+        if (authorIds) {
+            authors = await this.authorsService.findByIds(authorIds);
+          }
         const book = this.repo.create(createBooksDto);
         book.authors = authors;
         return await this.repo.save(book);
@@ -38,4 +43,10 @@ export class BooksService {
         }
         return await this.repo.delete(books.id)
     }
+
+    // async findSelected(take:number = 10 , skip : number = 0){
+    //     this.repo.findAndCount({take, skip}).then((books) =>{
+    //         return books
+    //     })
+    // }
 }

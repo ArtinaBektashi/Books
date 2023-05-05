@@ -26,7 +26,7 @@ export class Books{
     @ManyToOne(() => Publisher , (publisher) => publisher.books)
     publisher : Publisher
 
-    @ManyToMany(() => Authors, (author) => author.books)
+    @ManyToMany(() => Authors, (author) => author.books , {nullable: true})
     @JoinTable()
     authors: Authors[]
 
