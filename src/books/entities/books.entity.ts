@@ -23,6 +23,9 @@ export class Books{
     @Column()
     published_date: string;
 
+    @Column({nullable: true})
+    image: string;
+
     @ManyToOne(() => Publisher , (publisher) => publisher.books)
     publisher : Publisher
 

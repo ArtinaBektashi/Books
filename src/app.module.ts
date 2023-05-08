@@ -14,9 +14,6 @@ import { GenresModule } from './genres/genres.module';
 import { UsersModule } from './users/users.module';
 import { Users } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
-import { AuthMiddleware } from './auth/auth.middleware';
-// import { MailerService } from './mailer/mailer.service';
-// import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -44,13 +41,4 @@ import { AuthMiddleware } from './auth/auth.middleware';
   providers: [AppService],
 })
 export class AppModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer
-  //     .apply(AuthMiddleware)
-  //     .exclude({ path: 'auth/login', method: RequestMethod.POST },
-  //     { path: 'auth/register', method: RequestMethod.POST },
-  //     { path: 'auth/reset-password/:token', method: RequestMethod.POST },
-  //     { path: 'auth/forgot-password', method: RequestMethod.POST })
-  //     .forRoutes('*');
-  // }
 }

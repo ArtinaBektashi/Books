@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { Books } from './entities/books.entity';
 import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Observable } from 'rxjs';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { saveImageToStorage } from './helper/image-storage';
 
 @Controller('books')
 export class BooksController {
@@ -40,4 +42,14 @@ export class BooksController {
         return await this.booksService.removeBook(id);
     }
 
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', saveImageToStorage))
+    uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) : any {
+        const fileName = file?.filename;
+
+        if(!fileName){
+            throw new HttpException('File must be jpg,jpeg,png', HttpStatus.FORBIDDEN);
+        }
+    }
+    
 }
