@@ -5,7 +5,10 @@ import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Observable } from 'rxjs';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { saveImageToStorage } from './helper/image-storage';
+import { isFileExtensionSafe, saveImageToStorage } from './helper/image-storage';
+import { join } from 'path';
+import * as fs from 'fs';
+
 
 @Controller('books')
 export class BooksController {
@@ -44,12 +47,27 @@ export class BooksController {
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', saveImageToStorage))
-    uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) : any {
-        const fileName = file?.filename;
+    async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req): Promise<any> {
+    const fileName = file?.filename;
 
-        if(!fileName){
-            throw new HttpException('File must be jpg,jpeg,png', HttpStatus.FORBIDDEN);
-        }
+    if (!fileName) {
+        throw new HttpException('File must be jpg, jpeg, png', HttpStatus.FORBIDDEN);
     }
-    
+
+        const imageFolderPath = join(process.cwd(), 'images');
+        const fullImagePath = join(imageFolderPath, '/', file.filename);
+
+        const isExtensionSafe = await isFileExtensionSafe(fullImagePath);
+        if (!isExtensionSafe) {
+            // Delete the file if the extension is not safe
+            fs.unlink(fullImagePath, (err) => {
+            if (err) {
+                console.error('Error deleting file:', err);
+            }
+            });
+            throw new HttpException('File content does not match extension', HttpStatus.FORBIDDEN);
+        }
+     
+        await fs.promises.rename(file.path, fullImagePath);
+        }
 }
