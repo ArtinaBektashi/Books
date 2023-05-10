@@ -6,11 +6,14 @@ import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
 import { AuthorsService } from 'src/authors/authors.service';
 import { Observable, from } from 'rxjs';
 import { Authors } from 'src/authors/entities/authors.entity';
+import StripeService from 'src/stripe/stripe.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class BooksService {
     constructor(@InjectRepository(Books) private repo : Repository<Books>,
-    private authorsService : AuthorsService){}
+    private authorsService : AuthorsService,
+    private usersService : UsersService){}
 
 
     async getBooks({ take, skip }: { take?: number; skip?: number } = {}): Promise<Books[]> {
@@ -49,11 +52,15 @@ export class BooksService {
     }
 
     async getBook(booksId: number): Promise<Books> {
-        return await this.repo.findOne({ where : {id: booksId }, relations :['authors']})
+        const  book = this.repo.findOne({ where : {id: booksId }, relations :['authors']})
+        if (!book) {
+            throw new NotFoundException('Book not found');
+          }
+          return book;
     }
 
-    async removeBook(booksId: number) {
-        const books = await this.repo.findOneBy({id:booksId})
+    async removeBook(id: number) {
+        const books = await this.repo.findOne({where : {id}})
         if(!books){
             throw new NotFoundException('Not found');
         }
@@ -85,4 +92,14 @@ export class BooksService {
         return await this.repo.save(book);
     }
     
+    async purchaseBook(userId: number, bookId: number , quantity : number) : Promise<Books>{
+        const book = await this.getBook(bookId);
+        
+        
+          const totalPrice = book.price * quantity;
+
+          await this.usersService.chargeCustomer(userId,totalPrice,'USD');
+
+          return book;
+    }
 }

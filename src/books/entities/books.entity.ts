@@ -36,4 +36,6 @@ export class Books{
     @ManyToMany(() => Genres)
     genres: Genres[]
     
+    @Column({nullable: true})
+    price: number;
 }

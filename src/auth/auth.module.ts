@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/users/entities/users.entity';
 import { MailerService } from 'src/mailer/mailer.service';
+import StripeService from 'src/stripe/stripe.service';
 // import { MailerService } from 'src/mailer/mailer.service';
 
 @Module({
@@ -12,7 +13,7 @@ import { MailerService } from 'src/mailer/mailer.service';
     TypeOrmModule.forFeature([Users]),
     PassportModule,
   ],
-  providers: [AuthService, MailerService,],
+  providers: [AuthService, MailerService,StripeService],
   exports: [AuthService],
   controllers: [AuthController],
 })

@@ -8,4 +8,7 @@ export class UsersDTO {
   password: string;
   
   role: UserRole = UserRole.USER;
+
+  @IsString()
+  stripeCustomerId?: string;
 }

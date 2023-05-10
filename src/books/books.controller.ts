@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { Books } from './entities/books.entity';
 import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
@@ -76,5 +76,17 @@ export class BooksController {
         await this.booksService.updateBookImage(bookId,fullImagePath);
 
         return { message: 'File uploaded successfully' };
+    }
+
+    @Post(':id/purchase')
+    @UseGuards(AuthGuard)
+    //get current user decorator
+    async purchaseBook(
+        @Param('id') bookId: number,
+        @Body('quantity') quantity: number,
+        @Req() request: Request,
+    ){
+    
+      
     }
 }

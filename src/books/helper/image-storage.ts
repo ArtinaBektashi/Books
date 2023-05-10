@@ -32,9 +32,6 @@ export const saveImageToStorage = {
     }
 }
 
-// export const isFileExtensionSafe = async (fullFilePath: string) : Promise<boolean> => {
-//     return await FileType.fromFile(fullFilePath)
-// }
 export const isFileExtensionSafe = async (fullFilePath: string): Promise<boolean> => {
     try {
       const fileSignature = await getFileSignature(fullFilePath);

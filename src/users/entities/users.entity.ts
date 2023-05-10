@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole } from '../enums/user.enum';
+import { IsOptional } from 'class-validator';
 
 
 @Entity()
@@ -16,4 +17,7 @@ export class Users {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+  @Column({nullable: true})
+  public stripeCustomerId : string;
 }

@@ -7,12 +7,14 @@ import { Users } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import StripeService from 'src/stripe/stripe.service';
 
 
 @Injectable()
 export class AuthService {
     constructor(
-    @InjectRepository(Users) private usersRepository:Repository<Users>,){}
+    @InjectRepository(Users) private usersRepository:Repository<Users>,
+    private stripeService : StripeService){}
 
     async createUser(body: any): Promise<Record<string, any>> {
        
@@ -30,6 +32,13 @@ export class AuthService {
             isOk = true;
           }
         });
+
+        const customer = await this.stripeService.createCustomer(body.name, body.email)
+
+        const stripeCustomerId = customer.id;
+
+        userDTO.stripeCustomerId = stripeCustomerId;
+        
         if (isOk) {
           await this.usersRepository.save(userDTO).catch((error) => {
             isOk = false;

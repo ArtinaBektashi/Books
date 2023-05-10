@@ -32,7 +32,12 @@ import { AuthModule } from './auth/auth.module';
           password : config.get<string>('DB_PASSWORD'),
           database : config.get<string>('DB_NAME'),
           entities: [Publisher, Books, Authors, Genres, Users ],
-          synchronize: true
+          synchronize: true,
+          extra: {
+            stripeSecretKey: config.get<string>('STRIPE_SECRET_KEY'),
+            stripeCurrency: config.get<string>('STRIPE_CURRENCY'),
+            frontendUrl: config.get<string>('FRONTEND_URL'),
+          },
         }
       }
     }),

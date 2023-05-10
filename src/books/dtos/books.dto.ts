@@ -22,6 +22,9 @@ export class CreateBooksDto{
     @IsArray()
     @IsNumber({}, { each: true })
     authorIds? : number[];
+
+    @IsNumber()
+    price?:number;
    
 }
 
@@ -45,4 +48,7 @@ export class UpdateBooksDto{
     @IsString()
     @IsOptional()
     published_date: string;
+
+    @IsNumber()
+    price?:number;
 }
