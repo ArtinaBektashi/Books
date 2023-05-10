@@ -45,29 +45,36 @@ export class BooksController {
         return await this.booksService.removeBook(id);
     }
 
-    @Post('upload')
+    @Post('upload/:bookId')
     @UseInterceptors(FileInterceptor('file', saveImageToStorage))
-    async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req): Promise<any> {
+    async uploadFile(
+    @Param('bookId') bookId: number, 
+    @UploadedFile() file: Express.Multer.File,
+    ): Promise<any> {
     const fileName = file?.filename;
 
     if (!fileName) {
         throw new HttpException('File must be jpg, jpeg, png', HttpStatus.FORBIDDEN);
     }
 
-        const imageFolderPath = join(process.cwd(), 'images');
-        const fullImagePath = join(imageFolderPath, '/', file.filename);
+    const imageFolderPath = join(process.cwd(), 'images');
+    const fullImagePath = join(imageFolderPath, '/', file.filename);
 
-        const isExtensionSafe = await isFileExtensionSafe(fullImagePath);
-        if (!isExtensionSafe) {
-            // Delete the file if the extension is not safe
-            fs.unlink(fullImagePath, (err) => {
-            if (err) {
-                console.error('Error deleting file:', err);
-            }
-            });
-            throw new HttpException('File content does not match extension', HttpStatus.FORBIDDEN);
+    const isExtensionSafe = await isFileExtensionSafe(fullImagePath);
+    if (!isExtensionSafe) {
+        fs.unlink(fullImagePath, (err) => {
+        if (err) {
+            console.error('Error deleting file:', err);
         }
-     
+        });
+        throw new HttpException('File content does not match extension', HttpStatus.FORBIDDEN);
+    }
+
         await fs.promises.rename(file.path, fullImagePath);
-        }
+
+    
+        await this.booksService.updateBookImage(bookId,fullImagePath);
+
+        return { message: 'File uploaded successfully' };
+    }
 }

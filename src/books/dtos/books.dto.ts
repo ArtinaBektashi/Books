@@ -2,19 +2,22 @@ import { IsNumber, IsString , IsOptional, IsArray} from "class-validator";
 
 export class CreateBooksDto{
     @IsString()
-    title: string;
+    title?: string;
 
     @IsNumber()
-    totalPages: number;
+    totalPages?: number;
 
     @IsNumber()
-    rating: number;
+    rating?: number;
 
     @IsString()
-    isbn:string;
+    isbn?:string;
 
     @IsString()
-    published_date: string;
+    published_date?: string;
+
+    @IsString()
+    image?:string;
 
     @IsArray()
     @IsNumber({}, { each: true })

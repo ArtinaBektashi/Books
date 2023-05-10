@@ -37,7 +37,9 @@ export class BooksService {
           }
         const book = this.repo.create(createBooksDto);
         book.authors = authors;
-        return await this.repo.save(book);
+        const savedBook = await this.repo.save(book);
+
+        return savedBook;
     }
 
     async updateBooks(booksId: number, updateBooksDto: UpdateBooksDto): Promise<Books> {
@@ -76,4 +78,11 @@ export class BooksService {
             count: total
         }
     }
+
+    async updateBookImage(bookId: number , imagePath: string) : Promise<Books>{
+        const book = await this.getBook(bookId);
+        book.image = imagePath;
+        return await this.repo.save(book);
+    }
+    
 }
