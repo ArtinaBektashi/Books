@@ -10,6 +10,7 @@ import StripeService from 'src/stripe/stripe.service';
 import { UsersService } from 'src/users/users.service';
 import { Users } from 'src/users/entities/users.entity';
 import Stripe from 'stripe';
+import { CreditCardDto } from 'src/stripe/card/card.dto';
 
 @Injectable()
 export class BooksService {
@@ -44,7 +45,11 @@ export class BooksService {
         const book = this.repo.create(createBooksDto);
         book.authors = authors;
         const savedBook = await this.repo.save(book);
+        const stripeProduct = await this.stripeService.createProduct(savedBook.title, savedBook.price);
 
+        savedBook.stripeProductId = stripeProduct.id;
+        await this.repo.save(savedBook);
+    
         return savedBook;
     }
 
@@ -95,12 +100,20 @@ export class BooksService {
         return await this.repo.save(book);
     }
 
-    async purchaseBook(stripeCustomerId: string, bookId: number): Promise<Stripe.Charge> {
+    async purchaseBook(
+        stripeCustomerId: string,
+        bookId: number,
+        card: CreditCardDto,
+      ): Promise<Stripe.Charge> {
         const book = await this.getBook(bookId);
-      
-        const charge = await this.stripeService.chargeCustomer(stripeCustomerId);
-      
+    
+        const charge = await this.stripeService.chargeCustomer(
+          stripeCustomerId,
+          card,
+          book.price, 
+          book.stripeProductId, 
+        );
+    
         return charge;
       }
-    
 }

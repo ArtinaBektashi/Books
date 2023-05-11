@@ -38,4 +38,7 @@ export class Books{
     
     @Column({nullable: true})
     price: number;
+
+    @Column({ nullable: true })
+    stripeProductId: string;
 }
