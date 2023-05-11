@@ -1,9 +1,9 @@
 import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { Stripe } from 'stripe';
 import StripeService from './stripe.service';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { Users } from 'src/users/entities/users.entity';
-import { GetCurrentUser, } from '../users/decorator/get-current-user.decorator';
+import { GetCurrentUser, } from '../decorators/get-current-user.decorator';
 import { BooksService } from 'src/books/books.service';
 import { UsersService } from 'src/users/users.service';
 import { CreditCardDto } from './card/card.dto';
@@ -16,7 +16,7 @@ export class StripeController {
     constructor(private readonly stripeService: StripeService,
         private readonly booksService : BooksService,
         private readonly usersService : UsersService) { }
-        
+
         @Post('purchase/:bookId')
         @UseGuards(AuthGuard)
         async purchase(@GetCurrentUser() user: Users, @Param('bookId') bookId: number, @Body() card: CreditCardDto) {
@@ -29,5 +29,5 @@ export class StripeController {
         } catch (error) {
             return { success: false, error: error.message };
         }
-        }
+    }
 }

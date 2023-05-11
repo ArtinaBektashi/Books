@@ -2,10 +2,10 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch,
 import { BooksService } from './books.service';
 import { Books } from './entities/books.entity';
 import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { Observable } from 'rxjs';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { isFileExtensionSafe, saveImageToStorage } from './helper/image-storage';
+import { isFileExtensionSafe, saveImageToStorage } from '../helper/image-storage';
 import { join } from 'path';
 import * as fs from 'fs';
 
@@ -76,17 +76,5 @@ export class BooksController {
         await this.booksService.updateBookImage(bookId,fullImagePath);
 
         return { message: 'File uploaded successfully' };
-    }
-
-    @Post(':id/purchase')
-    @UseGuards(AuthGuard)
-    //get current user decorator
-    async purchaseBook(
-        @Param('id') bookId: number,
-        @Body('quantity') quantity: number,
-        @Req() request: Request,
-    ){
-    
-      
     }
 }

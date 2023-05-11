@@ -7,7 +7,7 @@ import { AuthorsModule } from 'src/authors/authors.module';
 import StripeService from 'src/stripe/stripe.service';
 import { UsersService } from 'src/users/users.service';
 import { Users } from 'src/users/entities/users.entity';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Books]), 
