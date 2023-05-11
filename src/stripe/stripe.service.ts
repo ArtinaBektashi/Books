@@ -20,22 +20,26 @@ export default class StripeService {
       email
     });
   }
+  public async chargeCustomer(customerId
+  ): Promise<Stripe.Charge> {
+    const cardToken = await this.stripe.tokens.create({
+      card: {
+        number: '4242424242424242', 
+        exp_month: "12",
+        exp_year: "2024", 
+        cvc: '123' 
+      }
+    });
+    
+    const source = await this.stripe.customers.createSource(customerId, {
+      source: cardToken.id,
+    });
 
-    public async chargeCustomer(
-        customerId: string,
-        amount: number,
-        currency: string
-    ): Promise<Stripe.Charge> {
-        // const token= await this.stripe.tokens.create({
-        //     card:{
-
-        //     }
-        // })
-        return this.stripe.charges.create({
-        amount,
-        currency : this.configService.get('STRIPE_CURRENCY'),
-        customer: customerId,
-        // source:token.id
-        });
-    }
+    return this.stripe.charges.create({
+      amount : 200,
+      currency: this.configService.get('STRIPE_CURRENCY'),
+      customer: customerId,
+      source: source.id,
+    });
+  }
 }

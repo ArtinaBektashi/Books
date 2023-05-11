@@ -35,16 +35,4 @@ export class UsersService {
         return await this.usersRepository.save(user);
       }
 
-      async chargeCustomer(userId:number, amount:number,currency:string) : Promise<Stripe.Charge>{
-        const user = await this.getUsersById(userId);
-
-        if (!user) {
-          throw new NotFoundException('User not found');
-        }
-
-        const customerId = user.stripeCustomerId;
-
-        const charge = await this.stripeService.chargeCustomer(customerId,amount,currency);
-        return charge;
-      }
 }

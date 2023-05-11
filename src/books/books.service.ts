@@ -8,12 +8,15 @@ import { Observable, from } from 'rxjs';
 import { Authors } from 'src/authors/entities/authors.entity';
 import StripeService from 'src/stripe/stripe.service';
 import { UsersService } from 'src/users/users.service';
+import { Users } from 'src/users/entities/users.entity';
+import Stripe from 'stripe';
 
 @Injectable()
 export class BooksService {
     constructor(@InjectRepository(Books) private repo : Repository<Books>,
     private authorsService : AuthorsService,
-    private usersService : UsersService){}
+    private usersService : UsersService,
+    private stripeService : StripeService){}
 
 
     async getBooks({ take, skip }: { take?: number; skip?: number } = {}): Promise<Books[]> {
@@ -91,15 +94,13 @@ export class BooksService {
         book.image = imagePath;
         return await this.repo.save(book);
     }
-    
-    async purchaseBook(userId: number, bookId: number , quantity : number) : Promise<Books>{
+
+    async purchaseBook(stripeCustomerId: string, bookId: number): Promise<Stripe.Charge> {
         const book = await this.getBook(bookId);
-        
-        
-          const totalPrice = book.price * quantity;
-
-          await this.usersService.chargeCustomer(userId,totalPrice,'USD');
-
-          return book;
-    }
+      
+        const charge = await this.stripeService.chargeCustomer(stripeCustomerId);
+      
+        return charge;
+      }
+    
 }

@@ -14,6 +14,7 @@ import { GenresModule } from './genres/genres.module';
 import { UsersModule } from './users/users.module';
 import { Users } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -41,7 +42,7 @@ import { AuthModule } from './auth/auth.module';
         }
       }
     }),
-    BooksModule, PublishersModule, AuthorsModule, GenresModule, UsersModule, AuthModule ],
+    BooksModule, PublishersModule, AuthorsModule, GenresModule, UsersModule, AuthModule, StripeModule ],
   controllers: [AppController],
   providers: [AppService],
 })

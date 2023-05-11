@@ -14,5 +14,6 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
   AuthorsModule,TypeOrmModule.forFeature([Users])],
   controllers: [BooksController],
   providers: [BooksService, UsersService, StripeService, AuthGuard],
+  exports : [BooksService]
 })
 export class BooksModule {}

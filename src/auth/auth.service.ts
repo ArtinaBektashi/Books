@@ -17,42 +17,25 @@ export class AuthService {
     private stripeService : StripeService){}
 
     async createUser(body: any): Promise<Record<string, any>> {
-       
-        let isOk = false;
-      
-        const userDTO = new UsersDTO();
-        userDTO.email = body.email;
-        userDTO.password = bcrypt.hashSync(body.password, 10);
-        
-     
-        await validate(userDTO).then((errors) => {
-          if (errors.length > 0) {
-            throw new Error("Error");
-          } else {
-            isOk = true;
-          }
-        });
-
-        const customer = await this.stripeService.createCustomer(body.name, body.email)
-
-        const stripeCustomerId = customer.id;
-
-        userDTO.stripeCustomerId = stripeCustomerId;
-        
-        if (isOk) {
-          await this.usersRepository.save(userDTO).catch((error) => {
-            isOk = false;
-            throw new Error("Error");
-          });
-          if (isOk) {
-            return { status: 201, content: { msg: `User created with success` } };
-          } else {
-            return { status: 400, content: { msg: 'User already exists' } };
-          }
-        } else {
-          return { status: 400, content: { msg: 'Invalid content' } };
-        }
+      const userDTO = new UsersDTO();
+      userDTO.email = body.email;
+      userDTO.password = bcrypt.hashSync(body.password, 10);
+    
+      const errors = await validate(userDTO);
+      if (errors.length > 0) {
+        return { status: 400, content: { msg: 'Invalid content', errors } };
       }
+    
+      try {
+        const customer = await this.stripeService.createCustomer(body.name, body.email);
+        userDTO.stripeCustomerId = customer.id;
+    
+        await this.usersRepository.save(userDTO);
+        return { status: 201, content: { msg: 'User created with success' } };
+      } catch (error) {
+        return { status: 400, content: { msg: 'User already exists' } };
+      }
+    }
 
       async login(user: any): Promise<Record<string, any>> {
         

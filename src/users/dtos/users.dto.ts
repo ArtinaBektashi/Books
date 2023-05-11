@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 import { UserRole } from '../enums/user.enum';
 
 export class UsersDTO {
@@ -9,6 +9,5 @@ export class UsersDTO {
   
   role: UserRole = UserRole.USER;
 
-  @IsString()
-  stripeCustomerId?: string;
+  stripeCustomerId: string;
 }
