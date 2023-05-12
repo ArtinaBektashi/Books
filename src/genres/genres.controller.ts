@@ -15,9 +15,9 @@ export class GenresController {
   }
 
   @Post('subgenre')
-async createSubgenre(@Body() createSubgenreDto: GenresDto, @Body('parentId') parentId: number): Promise<Genres> {
-  return this.genresService.createSubgenre(createSubgenreDto, parentId);
-}
+    async createSubgenre(@Body() createSubgenreDto: GenresDto, @Body('parentId') parentId: number): Promise<Genres> {
+    return this.genresService.createSubgenre(createSubgenreDto, parentId);
+    }
 
   @Get()
   async findAllGenres(): Promise<Genres[]> {
