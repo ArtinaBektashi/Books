@@ -38,4 +38,6 @@ export class AuthorsService {
 
         return authors;
     }
+    
 }
+// a user that buys a book , now wants to see the featured book , which autor has written it, and the genre of the book 

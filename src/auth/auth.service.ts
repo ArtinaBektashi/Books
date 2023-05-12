@@ -110,3 +110,5 @@ export class AuthService {
           return { status: 200, msg: { msg: 'Password reset successful' } };
         }
 }
+
+

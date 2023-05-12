@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { Books } from './entities/books.entity';
-import { FindManyOptions, Like, Repository } from 'typeorm';
+import { FindManyOptions, In, Like, Repository } from 'typeorm';
 import { CreateBooksDto, UpdateBooksDto } from './dtos/books.dto';
 import { AuthorsService } from 'src/authors/authors.service';
 import { Observable, from } from 'rxjs';
@@ -75,24 +75,12 @@ export class BooksService {
         return await this.repo.delete(books.id)
     }
 
-    async findAll(query): Promise<{ data: Books[], count: number }> {
-        const take = query.take || 10
-        const skip = query.skip || 0
-        const keyword = query.keyword || ''
-    
-        const [result, total] = await this.repo.findAndCount(
-            {
-                where: { title: Like('%' + keyword + '%') }, order: { title: "DESC" },
-                take: take,
-                skip: skip
-            }
-        );
-    
-        return {
-            data: result,
-            count: total
-        }
+    async findByIds(booksId: number[]) {
+        const books = this.repo.find({where: {id: In(booksId)}})
+
+        return books;
     }
+    
 
     async updateBookImage(bookId: number , imagePath: string) : Promise<Books>{
         const book = await this.getBook(bookId);

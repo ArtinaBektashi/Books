@@ -13,7 +13,6 @@ export class UsersController {
     @UseGuards(AuthGuard,RolesGuard)
     @Roles(UserRole.USER)
     userRoute() {
-      // All users can access this route
       return 'Hello user!';
     }
 
@@ -24,3 +23,6 @@ export class UsersController {
         return await this.usersService.updateUsersRole(id,role as UserRole);
     }
 }
+
+//query params me filtru usera, nbaz temrave
+//query qe check ne 3,4 tabela
