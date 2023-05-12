@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { GenresService } from './genres.service';
 import { Genres } from './entities/genres.entities';
 import { GenresDto } from './dtos/genres.dto';
@@ -7,6 +7,12 @@ import { GenresDto } from './dtos/genres.dto';
 export class GenresController {
   constructor(private readonly genresService: GenresService) {}
 
+  @Post()
+  async createGenre(@Body() createGenreDto: GenresDto, @Query('parentId') parentId?: number): Promise<Genres> {
+    const { genre } = createGenreDto;
+  
+    return this.genresService.createGenre(genre, parentId);
+  }
 
   @Post('subgenre')
 async createSubgenre(@Body() createSubgenreDto: GenresDto, @Body('parentId') parentId: number): Promise<Genres> {

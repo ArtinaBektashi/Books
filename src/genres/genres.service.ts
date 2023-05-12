@@ -9,8 +9,20 @@ import { GenresDto } from "./dtos/genres.dto";
 export class GenresService {
   constructor(@InjectRepository(Genres) private repo: Repository<Genres>) {}
 
-  async createSubgenre(createSubgenreDto: GenresDto, parentId: number): Promise<Genres> {
-    const parent = await this.repo.findOne({where : {id: parentId}});
+  async createGenre(genre: string, id?: number): Promise<Genres> {
+    const newGenre = new Genres();
+    newGenre.genre = genre;
+  
+    if (id) {
+      const parent = await this.repo.findOne({where: {id}});
+      newGenre.parent = parent;
+    }
+  
+    return this.repo.save(newGenre);
+  }
+
+  async createSubgenre(createSubgenreDto: GenresDto, id: number): Promise<Genres> {
+    const parent = await this.repo.findOne({where : {id}});
   
     const newSubgenre = new Genres();
     newSubgenre.genre = createSubgenreDto.genre;
