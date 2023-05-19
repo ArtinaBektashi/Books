@@ -61,7 +61,7 @@ export const isFileExtensionSafe = async (fullFilePath: string): Promise<boolean
       jpeg: Buffer.from([255, 216, 255]),
     };
   
-    // Check if the file signature matches any of the supported types
+    // Check if the file signature matches any of the supported type
     for (const fileType in fileSignatures) {
       if (fileSignatures[fileType].equals(fileSignature.slice(0, fileSignatures[fileType].length))) {
         return true;

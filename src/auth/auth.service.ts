@@ -8,13 +8,14 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import StripeService from 'src/stripe/stripe.service';
+import { DialogflowService } from 'src/chat/dialogflow.service';
 
 
 @Injectable()
 export class AuthService {
     constructor(
     @InjectRepository(Users) private usersRepository:Repository<Users>,
-    private stripeService : StripeService){}
+    private stripeService : StripeService, private dialogflowService: DialogflowService){}
 
     async createUser(body: any): Promise<Record<string, any>> {
       const userDTO = new UsersDTO();
@@ -108,6 +109,11 @@ export class AuthService {
           await this.usersRepository.save(user);
       
           return { status: 200, msg: { msg: 'Password reset successful' } };
+        }
+
+        async processUserInput(sessionId: string, userInput: string): Promise<string> {
+          const dialogflowResponse = await this.dialogflowService.sendMessage(sessionId, userInput);
+          return dialogflowResponse;
         }
 }
 

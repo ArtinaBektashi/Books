@@ -42,4 +42,10 @@ export class AuthController {
           const resetPasswordResult = await this.authService.resetPassword(token, body.password);
           return { status: resetPasswordResult.status, content: resetPasswordResult.msg };
       }
+
+      @Post('chat')
+      async processUserInput(@Body() body: { sessionId: string; userInput: string }) {
+        const { sessionId, userInput } = body;
+        const response = await this.authService.processUserInput(sessionId, userInput);
+      }
 }
