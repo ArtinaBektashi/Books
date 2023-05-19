@@ -15,6 +15,9 @@ import { UsersModule } from './users/users.module';
 import { Users } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
 import { StripeModule } from './stripe/stripe.module';
+import { ReadinglistModule } from './readinglist/readinglist.module';
+import { ReadingList } from './readinglist/entities/reading-list.entity';
+import { DialogflowModule } from './chat/dialogflow.module';
 
 @Module({
   imports: [
@@ -32,7 +35,7 @@ import { StripeModule } from './stripe/stripe.module';
           username : config.get<string>('DB_USERNAME'),
           password : config.get<string>('DB_PASSWORD'),
           database : config.get<string>('DB_NAME'),
-          entities: [Publisher, Books, Authors, Genres, Users ],
+          entities: [Publisher, Books, Authors, Genres, Users, ReadingList ],
           synchronize: true,
           extra: {
             stripeSecretKey: config.get<string>('STRIPE_SECRET_KEY'),
@@ -42,7 +45,7 @@ import { StripeModule } from './stripe/stripe.module';
         }
       }
     }),
-    BooksModule, PublishersModule, AuthorsModule, GenresModule, UsersModule, AuthModule, StripeModule ],
+    BooksModule, PublishersModule, AuthorsModule, GenresModule, UsersModule, AuthModule, StripeModule, ReadinglistModule, DialogflowModule ],
   controllers: [AppController],
   providers: [AppService],
 })

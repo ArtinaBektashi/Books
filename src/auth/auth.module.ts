@@ -6,12 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/users/entities/users.entity';
 import { MailerService } from 'src/mailer/mailer.service';
 import StripeService from 'src/stripe/stripe.service';
+import { DialogflowModule } from 'src/chat/dialogflow.module';
 // import { MailerService } from 'src/mailer/mailer.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Users]),
     PassportModule,
+    DialogflowModule
   ],
   providers: [AuthService, MailerService,StripeService],
   exports: [AuthService],
